@@ -1,0 +1,29 @@
+specVersion: 1.3.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: CollectionFactory
+    network: hoodi
+    source:
+      address: "0xdb6bae1d8284085a16de92176c7a4fcea7aa5bda"
+      abi: CollectionFactory
+      startBlock: 2048176
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - CollectionCreated
+        - FactoryOwnerTransferred
+      abis:
+        - name: CollectionFactory
+          file: ./abis/CollectionFactory.json
+      eventHandlers:
+        - event: CollectionCreated(indexed address,indexed address)
+          handler: handleCollectionCreated
+        - event: FactoryOwnerTransferred(indexed address,indexed address)
+          handler: handleFactoryOwnerTransferred
+      file: ./src/collection-factory.ts
