@@ -6,12 +6,12 @@ schema:
 
 dataSources:
   - kind: ethereum
-    name: CollectionFactory
+    name: ERC721Factory
     network: hoodi
     source:
-      address: "0x58bDe4D7E70a0DE43122466Be87Ab9343339689c"
-      abi: CollectionFactory
-      startBlock: 2044196
+      address: "0xa0df72504865cc0eaa7173ba00058c9924a77888"
+      abi: ERC721Factory
+      startBlock: 2050811
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -19,10 +19,10 @@ dataSources:
       entities:
         - Collection
       abis:
-        - name: CollectionFactory
-          file: ./abis/CollectionFactory.json
+        - name: ERC721Factory
+          file: ./abis/ERC721Factory.json
       eventHandlers:
-        - event: CollectionCreated(indexed address,indexed address,uint256)
+        - event: CollectionCreated(indexed address,indexed address)
           handler: handleCollectionCreated
       file: ./src/collection-factory.ts
 templates:
@@ -43,22 +43,22 @@ templates:
       abis:
         - name: ERC721Collection
           file: ./abis/ERC721Collection.json
-        - name: CollectionFactory
-          file: ./abis/CollectionFactory.json
+        - name: ERC721Factory
+          file: ./abis/ERC721Factory.json
       eventHandlers:
-        - event: PublicMint(indexed address,indexed address,uint256)
+        - event: PublicMint(indexed address,uint256)
           handler: handlePublicMint
-        - event: PresaleMint(indexed address,indexed address,uint256)
+        - event: PresaleMint(indexed address,uint256)
           handler: handlePresaleMint
-        - event: AdminMint(indexed address,indexed address,uint256)
+        - event: AdminMint(indexed address,uint256)
           handler: handleAdminMint
         - event: SaleEndedByFactory(bool)
           handler: handleSaleEnded
-        - event: ConfigurationUpdated((string,string,string,uint256,address,address,uint16))
+        - event: ConfigurationUpdated((string,string,string,uint256,address,uint16))
           handler: handleConfigurationUpdated
         - event: PresaleUpdated((uint104,uint32,uint32,uint32,uint64,uint64,bytes32,bool))
           handler: handlePresaleUpdated
         - event: PublicSaleUpdated((uint104,uint32,uint64,uint64,bool))
           handler: handlePublicSaleUpdated
-        # - event: MerkleRootUpdated(bytes32)
-        #   handler: handleMarkleRootUpdated
+        - event: MerkleRootUpdated(bytes32)
+          handler: handleMarkleRootUpdated
