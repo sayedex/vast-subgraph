@@ -1,17 +1,62 @@
-type CollectionCreated @entity(immutable: true) {
-  id: Bytes!
-  creator: Bytes! # address
-  collection: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Collection @entity(immutable: false) {
+  id: ID!
+
+  creator: Bytes!
+  address: Bytes!
+
+  collectionSize: BigInt!
+  totalMinted: BigInt!
+
+  baseUri: String!
+  logoUri: String!
+  coverUri: String!
+
+  collectionType: String! # SINGLE | MULTI
+
+  createdAt: BigInt!
+  ended: Boolean!
+
+  publicSale: PublicSaleConfig!
+  presale: PresaleConfig!
+
+  mints: [Mint!]! @derivedFrom(field: "collection")
 }
 
-type FactoryOwnerTransferred @entity(immutable: true) {
-  id: Bytes!
-  oldOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type PublicSaleConfig @entity(immutable: false) {
+  id: ID! # same as collection.id
+
+  collection: Collection!
+
+  price: BigInt!
+  maxPerWallet: BigInt!
+  startTime: BigInt!
+  endTime: BigInt!
+  disabled: Boolean!
+}
+
+type PresaleConfig @entity(immutable: false) {
+  id: ID! # same as collection.id
+
+  collection: Collection!
+
+  price: BigInt!
+  maxPerWallet: BigInt!
+  presaleSupply: BigInt!
+  presaleMinted: BigInt!
+  startTime: BigInt!
+  endTime: BigInt!
+  merkleRoot: Bytes!
+  disabled: Boolean!
+}
+
+
+
+
+type Mint @entity(immutable: true) {
+  id: ID!
+  collection: Collection!
+  user: Bytes!
+  quantity: BigInt!
+  type: String!
+  timestamp: BigInt!
 }

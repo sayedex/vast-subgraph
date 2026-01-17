@@ -3,6 +3,7 @@ indexerHints:
   prune: auto
 schema:
   file: ./schema.graphql
+
 dataSources:
   - kind: ethereum
     name: CollectionFactory
@@ -16,14 +17,47 @@ dataSources:
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       entities:
-        - CollectionCreated
-        - FactoryOwnerTransferred
+        - Collection
       abis:
         - name: CollectionFactory
           file: ./abis/CollectionFactory.json
       eventHandlers:
         - event: CollectionCreated(indexed address,indexed address)
           handler: handleCollectionCreated
-        - event: FactoryOwnerTransferred(indexed address,indexed address)
-          handler: handleFactoryOwnerTransferred
       file: ./src/collection-factory.ts
+
+templates:
+  - name: ERC721Collection
+    kind: ethereum
+    network: hoodi
+    source:
+      abi: ERC721Collection
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/erc721-collection.ts
+      entities:
+        - Collection
+        - PublicSaleConfig
+        - PresaleConfig
+      abis:
+        - name: ERC721Collection
+          file: ./abis/ERC721Collection.json
+      eventHandlers:
+        - event: PublicMint(indexed address,indexed address,uint256)
+          handler: handlePublicMint
+        - event: PresaleMint(indexed address,indexed address,uint256)
+          handler: handlePresaleMint
+        - event: AdminMint(indexed address,indexed address,uint256)
+          handler: handleAdminMint
+        - event: SaleEndedByFactory(bool)
+          handler: handleSaleEnded
+        - event: ConfigurationUpdated((string,string,string,uint256,address,address,uint16))
+          handler: handleConfigurationUpdated
+        - event: PresaleUpdated((uint104,uint32,uint32,uint32,uint64,uint64,bytes32,bool))
+          handler: handlePresaleUpdated
+        - event: PublicSaleUpdated((uint104,uint32,uint64,uint64,bool))
+          handler: handlePublicSaleUpdated
+        # - event: MerkleRootUpdated(bytes32)
+        #   handler: handleMarkleRootUpdated
