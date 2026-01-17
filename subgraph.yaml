@@ -1,6 +1,6 @@
 specVersion: 1.3.0
-indexerHints:
-  prune: auto
+# indexerHints:
+#   prune: auto
 schema:
   file: ./schema.graphql
 
@@ -9,9 +9,9 @@ dataSources:
     name: CollectionFactory
     network: hoodi
     source:
-      address: "0xdb6bae1d8284085a16de92176c7a4fcea7aa5bda"
+      address: "0x58bDe4D7E70a0DE43122466Be87Ab9343339689c"
       abi: CollectionFactory
-      startBlock: 2048176
+      startBlock: 2044196
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -22,13 +22,12 @@ dataSources:
         - name: CollectionFactory
           file: ./abis/CollectionFactory.json
       eventHandlers:
-        - event: CollectionCreated(indexed address,indexed address)
+        - event: CollectionCreated(indexed address,indexed address,uint256)
           handler: handleCollectionCreated
       file: ./src/collection-factory.ts
-
 templates:
-  - name: ERC721Collection
-    kind: ethereum
+  - kind: ethereum
+    name: ERC721Collection
     network: hoodi
     source:
       abi: ERC721Collection
@@ -44,6 +43,8 @@ templates:
       abis:
         - name: ERC721Collection
           file: ./abis/ERC721Collection.json
+        - name: CollectionFactory
+          file: ./abis/CollectionFactory.json
       eventHandlers:
         - event: PublicMint(indexed address,indexed address,uint256)
           handler: handlePublicMint

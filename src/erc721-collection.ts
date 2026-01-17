@@ -63,14 +63,12 @@ export function handleSaleEnded(event: SaleEndedByFactory): void {
 }
 
 export function handleConfigurationUpdated(event: ConfigurationUpdated): void {
-
-    log.info("handlePublicSaleUpdated called for collection {}", [event.address.toHex()])
     let id = event.address.toHex()
     let collection = Collection.load(id)
     if (collection === null) {
         collection = new Collection(id);
     }
-
+    collection.save()
 
     let config = event.params.newConfig;
 
