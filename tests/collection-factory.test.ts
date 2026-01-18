@@ -9,7 +9,7 @@ import {
 import { Address } from "@graphprotocol/graph-ts"
 import { CollectionCreated } from "../generated/schema"
 import { CollectionCreated as CollectionCreatedEvent } from "../generated/CollectionFactory/CollectionFactory"
-import { handleCollectionCreated } from "../src/collection-factory"
+import { handleCollectionCreated } from "../src/erc721-factory"
 import { createCollectionCreatedEvent } from "./collection-factory-utils"
 
 // Tests structure (matchstick-as >=0.5.0)

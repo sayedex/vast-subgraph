@@ -7,37 +7,76 @@ type Collection @entity(immutable: false) {
   collectionSize: BigInt!
   totalMinted: BigInt!
 
-  baseUri: String!
   logoUri: String!
   coverUri: String!
+  name:String!
+  symbol:String!
 
   collectionType: String! # SINGLE | MULTI
 
   createdAt: BigInt!
   ended: Boolean!
 
-  publicSale: PublicSaleConfig!
-  presale: PresaleConfig!
-
-  mints: [Mint!]! @derivedFrom(field: "collection")
+  # publicSale: PublicSaleConfig!
+  # presale: PresaleConfig!
+  editions: [Edition!]! @derivedFrom(field: "collection")
 }
 
-type PublicSaleConfig @entity(immutable: false) {
-  id: ID! # same as collection.id
+
+type Edition @entity(immutable: false)  {
+  id: ID!                      # {collection}-{tokenId}
 
   collection: Collection!
+
+  tokenId: BigInt!             # 0 for ERC721, real id for 1155
+
+  maxSupply: BigInt!
+  totalMinted: BigInt!
+
+  uri: String!
+
+  publicSale: PublicSaleConfig
+  presale: PresaleConfig
+}
+
+
+
+type PublicSaleConfig @entity(immutable: false){
+  id: ID!                      # {editionId}-public
+
+  edition: Edition!
 
   price: BigInt!
   maxPerWallet: BigInt!
+
   startTime: BigInt!
   endTime: BigInt!
-  disabled: Boolean!
+
+  active: Boolean!
 }
 
-type PresaleConfig @entity(immutable: false) {
-  id: ID! # same as collection.id
 
-  collection: Collection!
+
+# type PresaleConfig @entity(immutable: false) {
+#   id: ID! # same as collection.id
+
+#   collection: Collection!
+
+#   price: BigInt!
+#   maxPerWallet: BigInt!
+#   presaleSupply: BigInt!
+#   presaleMinted: BigInt!
+#   startTime: BigInt!
+#   endTime: BigInt!
+#   merkleRoot: Bytes!
+#   disabled: Boolean!
+# }
+
+
+type PresaleConfig @entity(immutable: false) {
+  id: ID!                      # {editionId}-presale
+
+  edition: Edition!
 
   price: BigInt!
   maxPerWallet: BigInt!
@@ -45,10 +84,11 @@ type PresaleConfig @entity(immutable: false) {
   presaleMinted: BigInt!
   startTime: BigInt!
   endTime: BigInt!
-  merkleRoot: Bytes!
-  disabled: Boolean!
-}
 
+  merkleRoot: Bytes!
+
+  active: Boolean!
+}
 
 
 

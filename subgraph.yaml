@@ -1,6 +1,4 @@
 specVersion: 1.3.0
-# indexerHints:
-#   prune: auto
 schema:
   file: ./schema.graphql
 
@@ -9,7 +7,7 @@ dataSources:
     name: ERC721Factory
     network: hoodi
     source:
-      address: "0xa0df72504865cc0eaa7173ba00058c9924a77888"
+      address: "0xa0DF72504865cC0EAA7173ba00058C9924a77888"
       abi: ERC721Factory
       startBlock: 2050811
     mapping:
@@ -18,13 +16,40 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Collection
+
+      file: ./src/erc721-factory.ts
       abis:
         - name: ERC721Factory
           file: ./abis/ERC721Factory.json
+        - name: ERC721Collection      # <-- ADD THIS
+          file: ./abis/ERC721Collection.json
       eventHandlers:
         - event: CollectionCreated(indexed address,indexed address)
-          handler: handleCollectionCreated
-      file: ./src/collection-factory.ts
+          handler: handleERC721CollectionCreated
+
+  - kind: ethereum
+    name: ERC1155Factory
+    network: hoodi
+    source:
+      address: "0x959399bAF076Ecba253650A05600D2c5688e2c71"
+      abi: ERC1155Factory
+      startBlock: 2050852
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Collection
+      file: ./src/erc1155-factory.ts
+      abis:
+        - name: ERC1155Factory
+          file: ./abis/ERC1155Factory.json
+        - name: ERC1155Collection      # <-- ADD THIS
+          file: ./abis/ERC1155Collection.json
+      eventHandlers:
+        - event: CollectionCreated(indexed address,indexed address)
+          handler: handleERC1155CollectionCreated
+
 templates:
   - kind: ethereum
     name: ERC721Collection
@@ -35,16 +60,16 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.9
       language: wasm/assemblyscript
-      file: ./src/erc721-collection.ts
       entities:
         - Collection
         - PublicSaleConfig
         - PresaleConfig
+        
+      file: ./src/erc721-collection.ts
       abis:
         - name: ERC721Collection
           file: ./abis/ERC721Collection.json
-        - name: ERC721Factory
-          file: ./abis/ERC721Factory.json
+
       eventHandlers:
         - event: PublicMint(indexed address,uint256)
           handler: handlePublicMint
@@ -62,3 +87,43 @@ templates:
           handler: handlePublicSaleUpdated
         - event: MerkleRootUpdated(bytes32)
           handler: handleMarkleRootUpdated
+
+  - kind: ethereum
+    name: ERC1155Collection
+    network: hoodi
+    source:
+      abi: ERC1155Collection
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Collection
+        - PublicSaleConfig
+        - PresaleConfig
+      file: ./src/erc1155-collection.ts
+      abis:
+        - name: ERC1155Collection
+          file: ./abis/ERC1155Collection.json
+
+      eventHandlers:
+        - event: AddedEdition(indexed uint256,uint256,string)
+          handler: handleAddedEdition
+        - event: AdminMint(indexed address,indexed uint256,uint256)
+          handler: handleAdminMint
+        - event: ConfigurationUpdated((string,string,address,uint16))
+          handler: handleConfigurationUpdated
+        # - event: MerkleRootUpdated(bytes32)
+        #   handler: handleMerkleRootUpdated
+        # - event: OwnerTransferred(indexed address,indexed address)
+        #   handler: handleOwnerTransferred
+        - event: PresaleMint(indexed address,indexed uint256,uint256)
+          handler: handlePresaleMint
+        - event: PresaleUpdated(uint256,(uint104,uint32,uint32,uint32,uint64,uint64,bytes32,bool))
+          handler: handlePresaleUpdated
+        - event: PublicMint(indexed address,indexed uint256,uint256)
+          handler: handlePublicMint
+        - event: PublicSaleUpdated(uint256,(uint104,uint32,uint64,uint64,bool))
+          handler: handlePublicSaleUpdated
+        - event: SaleEndedByFactory(bool)
+          handler: handleSaleEndedByFactory

@@ -8,51 +8,86 @@ import {
     PublicSaleUpdated,
     MerkleRootUpdated
 } from "../generated/templates/ERC721Collection/ERC721Collection"
-import { Collection, Mint, PresaleConfig, PublicSaleConfig } from "../generated/schema"
+import { Collection, Mint, PresaleConfig, PublicSaleConfig, Edition } from "../generated/schema"
 
 export function handlePublicMint(event: PublicMint): void {
-    let id = event.address.toHex()
-    let collection = Collection.load(id)
+    let collectionId = event.address.toHex()
+    let editionId = collectionId + "-0"
+
+    let collection = Collection.load(collectionId)!
+    let edition = Edition.load(editionId)!
+
     if (collection === null) {
-        collection = new Collection(id);
+        collection = new Collection(collectionId);
     }
+    if (edition === null) {
+        edition = new Edition(editionId);
+    }
+
+    edition.totalMinted = edition.totalMinted.plus(event.params.quantity)
     collection.totalMinted = collection.totalMinted.plus(event.params.quantity)
+
+
+
+    edition.save()
     collection.save()
 }
 
 export function handlePresaleMint(event: PresaleMint): void {
+    let collectionId = event.address.toHex()
+    let editionId = collectionId + "-0";
 
-    let id = event.address.toHex()
-    let collection = Collection.load(id)
+
+    let collection = Collection.load(collectionId)!
+    let edition = Edition.load(editionId)!
+    let presale = PresaleConfig.load(editionId + "-presale")
     if (collection === null) {
-        collection = new Collection(id);
+        collection = new Collection(collectionId);
+    }
+    if (edition === null) {
+        edition = new Edition(editionId);
     }
 
-    let presale = PresaleConfig.load(id)
     if (presale === null) {
-        presale = new PresaleConfig(id)
-        presale.collection = id
+        presale = new PresaleConfig(editionId + "-presale")
+        presale.edition = editionId
     }
 
-    presale.presaleMinted = presale.presaleMinted.plus(event.params.quantity)
-    collection.totalMinted = collection.totalMinted.plus(event.params.quantity)
-    presale.save();
+    presale.presaleMinted = presale.presaleMinted.plus(event.params.quantity);
+    edition.totalMinted = edition.totalMinted.plus(event.params.quantity)
+    collection.totalMinted = collection.totalMinted.plus(event.params.quantity);
+
+
+
+    edition.save()
     collection.save()
 }
+
+
 
 export function handleAdminMint(event: AdminMint): void {
-    let id = event.address.toHex()
-    let collection = Collection.load(id)
-    if (collection === null) {
-        collection = new Collection(id);
-    }
-    collection.totalMinted = collection.totalMinted.plus(event.params.quantity)
-    collection.save()
+    let collectionId = event.address.toHex()
+    let editionId = collectionId + "-0";
 
+    let collection = Collection.load(collectionId)!
+    let edition = Edition.load(editionId)!
+
+    if (collection === null) {
+        collection = new Collection(collectionId);
+    }
+    if (edition === null) {
+        edition = new Edition(editionId);
+    }
+
+    edition.totalMinted = edition.totalMinted.plus(event.params.quantity)
+    collection.totalMinted = collection.totalMinted.plus(event.params.quantity)
+
+    edition.save()
+    collection.save()
 }
 
-export function handleSaleEnded(event: SaleEndedByFactory): void {
 
+export function handleSaleEnded(event: SaleEndedByFactory): void {
     let id = event.address.toHex()
     let collection = Collection.load(id)
     if (collection === null) {
@@ -64,93 +99,89 @@ export function handleSaleEnded(event: SaleEndedByFactory): void {
 }
 
 export function handleConfigurationUpdated(event: ConfigurationUpdated): void {
-    let id = event.address.toHex()
-    let collection = Collection.load(id)
+    let collectionId = event.address.toHex()
+    let editionId = collectionId + "-0"
+
+    let collection = Collection.load(collectionId)!
+    let edition = Edition.load(editionId)!
+
     if (collection === null) {
-        collection = new Collection(id);
+        collection = new Collection(collectionId);
     }
+    if (edition === null) {
+        edition = new Edition(editionId);
+    }
+
 
     let config = event.params.newConfig;
 
-    // add config..
-    collection.baseUri = config.baseUri;
+    // add edition info
+    edition.maxSupply = config.collectionSize;
+    edition.uri = config.baseUri;
+
+    // add config
     collection.logoUri = config.logoUri;
     collection.coverUri = config.coverUri;
     collection.collectionSize = config.collectionSize;
 
-    collection.save()
+    collection.save();
+    edition.save();
 }
 
 export function handlePresaleUpdated(event: PresaleUpdated): void {
-    let id = event.address.toHex() // collection address used as ID
+    let collectionId = event.address.toHex()
+    let editionId = collectionId + "-0"
 
-    let config = event.params.newConfig;
+    let config = event.params.newConfig
 
-    // Load the collection (optional, for safety)
-    let collection = Collection.load(id)
-    if (collection === null) {
-        collection = new Collection(id);
+    let presale = PresaleConfig.load(editionId + "-presale")
+    if (presale == null) {
+        presale = new PresaleConfig(editionId + "-presale")
+        presale.edition = editionId
     }
 
-
-    // Load the presale config entity
-    let presale = PresaleConfig.load(id)
-    if (presale === null) {
-        // If somehow it doesn't exist, create it
-        presale = new PresaleConfig(id)
-        presale.collection = id
-    }
-
-    // Update all presale fields from the event
     presale.price = config.price
     presale.maxPerWallet = config.maxPerWallet
-    presale.presaleSupply = config.presaleSupply
-    //presale.presaleMinted = config.presaleMinted
     presale.startTime = config.startTime
     presale.endTime = config.endTime
     presale.merkleRoot = config.merkleRoot
-    presale.disabled = config.disabled
+    presale.active = !config.disabled
+    presale.presaleSupply = config.presaleSupply;
 
-    presale.save()
+    presale.save();
 }
 
+
+
 export function handlePublicSaleUpdated(event: PublicSaleUpdated): void {
-    let id = event.address.toHex() // collection address used as ID
+    let collectionId = event.address.toHex()
+    let editionId = collectionId + "-0"
 
-    let config = event.params.newConfig;
+    let config = event.params.newConfig
 
-    // Optional: check if collection exists
-    let collection = Collection.load(id)
-    if (collection === null) {
-        collection = new Collection(id);
+    let publicSale = PublicSaleConfig.load(editionId + "-public")
+    if (publicSale == null) {
+        publicSale = new PublicSaleConfig(editionId + "-public")
+        publicSale.edition = editionId
     }
 
-
-    // Load or create the PublicSaleConfig entity
-    let publicSale = PublicSaleConfig.load(id)
-    if (publicSale === null) {
-        publicSale = new PublicSaleConfig(id)
-        publicSale.collection = id
-    }
-
-    // Update fields from the event
     publicSale.price = config.price
     publicSale.maxPerWallet = config.maxPerWallet
     publicSale.startTime = config.startTime
     publicSale.endTime = config.endTime
-    publicSale.disabled = config.disabled
+    publicSale.active = !config.disabled
 
     publicSale.save()
 }
 
-export function handleMarkleRootUpdated(event: MerkleRootUpdated): void {
-    let id = event.address.toHex()
-    let presale = PresaleConfig.load(id)
-    if (presale === null) {
-        presale = new PresaleConfig(id)
-        presale.collection = id
-    }
 
-    presale.merkleRoot = event.params.newRoot;
-    presale.save();
+
+export function handleMarkleRootUpdated(event: MerkleRootUpdated): void {
+    let collectionId = event.address.toHex()
+    let editionId = collectionId + "-0"
+    let presale = PresaleConfig.load(editionId + "-presale")
+    if (presale != null) {
+        presale.merkleRoot = event.params.newRoot
+        presale.save()
+    }
 }
