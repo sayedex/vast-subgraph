@@ -7,9 +7,9 @@ dataSources:
     name: ERC721Factory
     network: hoodi
     source:
-      address: "0xa0DF72504865cC0EAA7173ba00058C9924a77888"
+      address: "0x503a6767215bb91b015daee0Df67b31e716411F3"
       abi: ERC721Factory
-      startBlock: 2050811
+      startBlock: 2057477
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -31,9 +31,9 @@ dataSources:
     name: ERC1155Factory
     network: hoodi
     source:
-      address: "0x959399bAF076Ecba253650A05600D2c5688e2c71"
+      address: "0xdCeaFe7C4C7f164C9960c94F5293AbcF1CE26597"
       abi: ERC1155Factory
-      startBlock: 2050852
+      startBlock: 2063003
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -73,19 +73,19 @@ templates:
       eventHandlers:
         - event: PublicMint(indexed address,uint256)
           handler: handlePublicMint
-        - event: PresaleMint(indexed address,uint256)
+        - event: PresaleMint(indexed address,uint256,uint256)
           handler: handlePresaleMint
         - event: AdminMint(indexed address,uint256)
           handler: handleAdminMint
         - event: SaleEndedByFactory(bool)
           handler: handleSaleEnded
-        - event: ConfigurationUpdated((string,string,string,uint256,address,uint16))
+        - event: ConfigurationUpdated((string,string,uint256,address,uint16))
           handler: handleConfigurationUpdated
-        - event: PresaleUpdated((uint104,uint32,uint32,uint32,uint64,uint64,bytes32,bool))
+        - event: PresaleUpdated((string,uint104,uint32,uint32,uint32,uint64,uint64,bytes32),uint256)
           handler: handlePresaleUpdated
-        - event: PublicSaleUpdated((uint104,uint32,uint64,uint64,bool))
+        - event: PublicSaleUpdated((uint104,uint32,uint64,uint64))
           handler: handlePublicSaleUpdated
-        - event: MerkleRootUpdated(bytes32)
+        - event: MerkleRootUpdated(bytes32,uint256)
           handler: handleMarkleRootUpdated
 
   - kind: ethereum
@@ -111,19 +111,19 @@ templates:
           handler: handleAddedEdition
         - event: AdminMint(indexed address,indexed uint256,uint256)
           handler: handleAdminMint
-        - event: ConfigurationUpdated((string,string,address,uint16))
+        - event: ConfigurationUpdated((string,address,uint16))
           handler: handleConfigurationUpdated
-        # - event: MerkleRootUpdated(bytes32)
+        # - event: MerkleRootUpdated(uint256,uint256,bytes32)
         #   handler: handleMerkleRootUpdated
         # - event: OwnerTransferred(indexed address,indexed address)
         #   handler: handleOwnerTransferred
-        - event: PresaleMint(indexed address,indexed uint256,uint256)
+        - event: PresaleMint(indexed address,indexed uint256,uint256,uint256)
           handler: handlePresaleMint
-        - event: PresaleUpdated(uint256,(uint104,uint32,uint32,uint32,uint64,uint64,bytes32,bool))
+        - event: PresaleUpdated(uint256,uint256,(string,uint104,uint32,uint32,uint32,uint64,uint64,bytes32))
           handler: handlePresaleUpdated
         - event: PublicMint(indexed address,indexed uint256,uint256)
           handler: handlePublicMint
-        - event: PublicSaleUpdated(uint256,(uint104,uint32,uint64,uint64,bool))
+        - event: PublicSaleUpdated(uint256,(uint104,uint32,uint64,uint64))
           handler: handlePublicSaleUpdated
         - event: SaleEndedByFactory(bool)
           handler: handleSaleEndedByFactory

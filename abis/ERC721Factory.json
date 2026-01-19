@@ -1,1 +1,318 @@
-[{"inputs":[{"internalType":"address","name":"implementation_","type":"address"},{"internalType":"uint256","name":"_platformMintFee","type":"uint256"},{"internalType":"address payable","name":"_platformFeeRecipient","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"creator","type":"address"},{"indexed":true,"internalType":"address","name":"collection","type":"address"}],"name":"CollectionCreated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"oldOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"FactoryOwnerTransferred","type":"event"},{"inputs":[{"internalType":"string","name":"name","type":"string"},{"internalType":"string","name":"symbol","type":"string"},{"components":[{"internalType":"string","name":"baseUri","type":"string"},{"internalType":"string","name":"logoUri","type":"string"},{"internalType":"string","name":"coverUri","type":"string"},{"internalType":"uint256","name":"collectionSize","type":"uint256"},{"internalType":"address payable","name":"fundsRecipient","type":"address"},{"internalType":"uint16","name":"royaltyBPS","type":"uint16"}],"internalType":"struct IERC721Collection.Configuration","name":"config","type":"tuple"},{"components":[{"internalType":"uint104","name":"price","type":"uint104"},{"internalType":"uint32","name":"maxPerWallet","type":"uint32"},{"internalType":"uint64","name":"startTime","type":"uint64"},{"internalType":"uint64","name":"endTime","type":"uint64"},{"internalType":"bool","name":"disabled","type":"bool"}],"internalType":"struct IERC721Collection.PublicSaleConfiguration","name":"publicSale","type":"tuple"},{"components":[{"internalType":"uint104","name":"price","type":"uint104"},{"internalType":"uint32","name":"maxPerWallet","type":"uint32"},{"internalType":"uint32","name":"presaleSupply","type":"uint32"},{"internalType":"uint32","name":"presaleMinted","type":"uint32"},{"internalType":"uint64","name":"startTime","type":"uint64"},{"internalType":"uint64","name":"endTime","type":"uint64"},{"internalType":"bytes32","name":"merkleRoot","type":"bytes32"},{"internalType":"bool","name":"disabled","type":"bool"}],"internalType":"struct IERC721Collection.PresaleConfiguration","name":"presale","type":"tuple"}],"name":"createCollection","outputs":[{"internalType":"address","name":"collection","type":"address"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"collection","type":"address"},{"internalType":"bool","name":"ended","type":"bool"}],"name":"endSaleForCollection","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"getPlatformFee","outputs":[{"internalType":"uint256","name":"fee","type":"uint256"},{"internalType":"address","name":"recipient","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"nftImplementation","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"platformFeeRecipient","outputs":[{"internalType":"address payable","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"platformMintFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address payable","name":"newRecipient","type":"address"}],"name":"setPlatformFeeRecipient","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"newFee","type":"uint256"}],"name":"setPlatformMintFee","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferFactoryOwner","outputs":[],"stateMutability":"nonpayable","type":"function"}]
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "implementation_",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_platformMintFee",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "_platformFeeRecipient",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "creator",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "collection",
+				"type": "address"
+			}
+		],
+		"name": "CollectionCreated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "oldOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "FactoryOwnerTransferred",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "symbol",
+				"type": "string"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "baseUri",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "metadataUri",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "collectionSize",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "fundsRecipient",
+						"type": "address"
+					},
+					{
+						"internalType": "uint16",
+						"name": "royaltyBPS",
+						"type": "uint16"
+					}
+				],
+				"internalType": "struct IERC721Collection.Configuration",
+				"name": "config",
+				"type": "tuple"
+			},
+			{
+				"components": [
+					{
+						"internalType": "uint104",
+						"name": "price",
+						"type": "uint104"
+					},
+					{
+						"internalType": "uint32",
+						"name": "maxPerWallet",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint64",
+						"name": "startTime",
+						"type": "uint64"
+					},
+					{
+						"internalType": "uint64",
+						"name": "endTime",
+						"type": "uint64"
+					}
+				],
+				"internalType": "struct IERC721Collection.PublicSaleConfiguration",
+				"name": "publicSale",
+				"type": "tuple"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "presaleName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint104",
+						"name": "price",
+						"type": "uint104"
+					},
+					{
+						"internalType": "uint32",
+						"name": "maxPerWallet",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "presaleSupply",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint32",
+						"name": "presaleMinted",
+						"type": "uint32"
+					},
+					{
+						"internalType": "uint64",
+						"name": "startTime",
+						"type": "uint64"
+					},
+					{
+						"internalType": "uint64",
+						"name": "endTime",
+						"type": "uint64"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "merkleRoot",
+						"type": "bytes32"
+					}
+				],
+				"internalType": "struct IERC721Collection.PresaleConfiguration[]",
+				"name": "presale",
+				"type": "tuple[]"
+			}
+		],
+		"name": "createCollection",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "collection",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "collection",
+				"type": "address"
+			},
+			{
+				"internalType": "bool",
+				"name": "ended",
+				"type": "bool"
+			}
+		],
+		"name": "endSaleForCollection",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getPlatformFee",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "fee",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "nftImplementation",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "platformFeeRecipient",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "platformMintFee",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "newRecipient",
+				"type": "address"
+			}
+		],
+		"name": "setPlatformFeeRecipient",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "newFee",
+				"type": "uint256"
+			}
+		],
+		"name": "setPlatformMintFee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferFactoryOwner",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]

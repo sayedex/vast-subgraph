@@ -7,8 +7,10 @@ type Collection @entity(immutable: false) {
   collectionSize: BigInt!
   totalMinted: BigInt!
 
-  logoUri: String!
-  coverUri: String!
+  platformFee: BigInt!           # New field: fee percentage in basis points
+  platformFeeRecipient: Bytes!   # New field: address of the fee recipient
+
+  metadataUri: String!
   name:String!
   symbol:String!
 
@@ -36,8 +38,9 @@ type Edition @entity(immutable: false)  {
   uri: String!
 
   publicSale: PublicSaleConfig
-  presale: PresaleConfig
+  presales: [PresaleConfig!]! @derivedFrom(field: "edition")  # one-to-many
 }
+
 
 
 
@@ -52,25 +55,7 @@ type PublicSaleConfig @entity(immutable: false){
   startTime: BigInt!
   endTime: BigInt!
 
-  active: Boolean!
 }
-
-
-
-# type PresaleConfig @entity(immutable: false) {
-#   id: ID! # same as collection.id
-
-#   collection: Collection!
-
-#   price: BigInt!
-#   maxPerWallet: BigInt!
-#   presaleSupply: BigInt!
-#   presaleMinted: BigInt!
-#   startTime: BigInt!
-#   endTime: BigInt!
-#   merkleRoot: Bytes!
-#   disabled: Boolean!
-# }
 
 
 type PresaleConfig @entity(immutable: false) {
@@ -87,7 +72,6 @@ type PresaleConfig @entity(immutable: false) {
 
   merkleRoot: Bytes!
 
-  active: Boolean!
 }
 
 
@@ -99,4 +83,16 @@ type Mint @entity(immutable: true) {
   quantity: BigInt!
   type: String!
   timestamp: BigInt!
+}
+
+
+
+type PlatformStats @entity(immutable: false) {
+  id: ID!                     # Use a constant ID, e.g., "platform"
+
+  totalRevenue: BigInt!       # Total platform fees accrued across all collections
+  totalCollections: BigInt!   # Total collections created
+  singleCollections: BigInt!  # Count of SINGLE type collections
+  multiCollections: BigInt!   # Count of MULTI type collections
+  totalMinted: BigInt!        # Total NFTs minted across all collections
 }
